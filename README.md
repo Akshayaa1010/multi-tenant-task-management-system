@@ -65,17 +65,6 @@ All endpoints except authentication and health checks require a valid JWT in the
 | **PATCH** | `/api/orgs/members/:id/role` | Admin | Update a member's role |
 | **GET** | `/api/audit` | Admin | View organization audit trail |
 
-## 🧪 Test Credentials (from Seed Script)
-All seeded users share the password: `password123`
-
-### Acme Corp
-- **Admin**: `alice@acme.com`
-- **Member**: `bob@acme.com`
-- **Viewer**: `carol@acme.com`
-
-### Globex Inc
-- **Admin**: `dave@globex.com`
-- **Member**: `eve@globex.com`
 
 ## 🛠️ Tech Stack
 

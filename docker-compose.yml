@@ -1,0 +1,105 @@
+services:
+  # ── React Vite Frontend ──────────────────────
+  react-app:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      target: development
+    container_name: credzen_react
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    environment:
+      - VITE_API_URL=http://localhost:5005/api
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    depends_on:
+      - api-server
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  # ── Node.js / Express API ────────────────────
+  api-server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+      target: development
+    container_name: credzen_api
+    ports:
+      - "5005:5005"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/taskmanager
+      - JWT_SECRET=${JWT_SECRET}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - REDIS_URL=redis://redis:6379
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  # ── PostgreSQL Database ──────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: credzen_postgres
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: taskmanager
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db:/docker-entrypoint-initdb.d   # auto-runs SQL files on first start
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # ── Redis Cache / Queue ──────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: credzen_redis
+    ports:
+      - "6379:6379"
+    env_file:
+      - .env
+    volumes:
+      - redis_data:/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+# ── Named Volumes ────────────────────────────
+volumes:
+  postgres_data:
+  redis_data:
+
+# ── Networks ─────────────────────────────────
+networks:
+  app-network:
+    driver: bridge

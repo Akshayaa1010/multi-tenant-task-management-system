@@ -1,0 +1,26 @@
+# ── Environment ──────────────────────────────
+.env
+*.env.local
+
+# ── Node ─────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ── Vite / Build output ───────────────────────
+dist/
+build/
+.vite/
+
+# ── OS / Editor ───────────────────────────────
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.suo
+*.user
+
+# ── Docker volumes (local bind mounts) ────────
+postgres_data/
+redis_data/

@@ -1,6 +1,6 @@
-# CredZen — Multi-Tenant Task Management Platform
+# Zen — Multi-Tenant Task Management Platform
 
-CredZen is a secure, full-stack multi-tenant task management application built with Node.js, Express, PostgreSQL, and React. It features robust tenant isolation, Role-Based Access Control (RBAC), and comprehensive audit logging.
+Zen is a secure, full-stack multi-tenant task management application built with Node.js, Express, PostgreSQL, and React. It features robust tenant isolation, Role-Based Access Control (RBAC), and comprehensive audit logging.
 
 ## 🚀 Getting Started
 
